@@ -67,8 +67,17 @@ const ResonanceMap = () => {
   }, []);
 
   const globePoints = useMemo(() => {
-    return vibes
-      .filter(vibe => vibe.latitude && vibe.longitude) // Only show vibes with real locations
+    const pointsWithLocation = vibes.filter(vibe => vibe.latitude && vibe.longitude);
+    
+    console.log('📍 Total vibes:', vibes.length);
+    console.log('📍 Vibes with location:', pointsWithLocation.length);
+    console.log('📍 Sample locations:', pointsWithLocation.slice(0, 3).map(v => ({
+      lat: v.latitude,
+      lng: v.longitude,
+      name: v.location_name
+    })));
+    
+    return pointsWithLocation
       .slice(0, 100)
       .map((vibe) => {
         const mood = (vibe.energy + vibe.calm + vibe.creative + vibe.focus + vibe.joy) / 5;

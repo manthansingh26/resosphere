@@ -35,7 +35,7 @@ const Earth = ({ points, onPointClick }: { points: VibePoint[]; onPointClick?: (
   );
 
   // Convert lat/lng to 3D coordinates - ACCURATE FORMULA
-  const latLngToVector3 = (lat: number, lng: number, radius: number = 2.5) => {
+  const latLngToVector3 = (lat: number, lng: number, radius: number = 2.52) => {
     const phi = (90 - lat) * (Math.PI / 180);
     const theta = (lng + 180) * (Math.PI / 180);
     
@@ -49,7 +49,7 @@ const Earth = ({ points, onPointClick }: { points: VibePoint[]; onPointClick?: (
   // Create vibe point meshes
   const vibePointMeshes = useMemo(() => {
     return points.map((point, index) => {
-      const position = latLngToVector3(point.lat, point.lng, 2.56);
+      const position = latLngToVector3(point.lat, point.lng, 2.52);
       return {
         position,
         color: point.color,
@@ -126,7 +126,7 @@ const Earth = ({ points, onPointClick }: { points: VibePoint[]; onPointClick?: (
       <group ref={pointsGroupRef}>
         {vibePointMeshes.map((vibe, index) => (
           <group key={index} position={vibe.position}>
-            {/* Small energy orb */}
+            {/* Main energy orb - INCREASED SIZE for visibility */}
             <mesh
               onClick={() => onPointClick?.(vibe.point)}
               onPointerOver={(e) => {
@@ -137,30 +137,30 @@ const Earth = ({ points, onPointClick }: { points: VibePoint[]; onPointClick?: (
                 document.body.style.cursor = 'default';
               }}
             >
-              <sphereGeometry args={[0.04, 12, 12]} />
+              <sphereGeometry args={[0.08, 16, 16]} />
               <meshBasicMaterial
                 color={vibe.color}
                 transparent
-                opacity={0.9}
+                opacity={0.95}
               />
             </mesh>
 
-            {/* Subtle outer glow */}
+            {/* Brighter outer glow */}
             <mesh>
-              <sphereGeometry args={[0.06, 12, 12]} />
+              <sphereGeometry args={[0.12, 16, 16]} />
               <meshBasicMaterial
                 color={vibe.color}
                 transparent
-                opacity={0.25}
+                opacity={0.4}
                 side={THREE.BackSide}
               />
             </mesh>
 
-            {/* Point light */}
+            {/* Stronger point light */}
             <pointLight
               color={vibe.color}
-              intensity={0.8}
-              distance={0.25}
+              intensity={1.5}
+              distance={0.4}
             />
           </group>
         ))}
