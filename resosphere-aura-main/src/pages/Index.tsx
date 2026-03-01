@@ -181,7 +181,7 @@ const Index = () => {
         </StaggerItem>
 
         {/* 3D Orb - MASSIVE and interactive */}
-        <StaggerItem className="w-full max-w-2xl h-[400px] sm:h-[500px] lg:h-[600px] my-8 relative">
+        <StaggerItem className="w-full max-w-2xl h-[300px] sm:h-[400px] lg:h-[500px] xl:h-[600px] my-6 sm:my-8 relative">
           <motion.div
             className="w-full h-full relative"
             whileHover={{ scale: 1.05 }}
@@ -189,11 +189,11 @@ const Index = () => {
           >
             <AuraOrb className="w-full h-full" speed={0.5} distort={0.4} />
             
-            {/* Orbiting particles around orb */}
+            {/* Orbiting particles around orb - hidden on mobile for performance */}
             {[...Array(8)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute w-3 h-3 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400"
+                className="hidden sm:block absolute w-2 h-2 sm:w-3 sm:h-3 rounded-full bg-gradient-to-r from-indigo-400 to-purple-400"
                 style={{
                   top: '50%',
                   left: '50%',
@@ -201,12 +201,12 @@ const Index = () => {
                 }}
                 animate={{
                   x: [
-                    Math.cos((i / 8) * Math.PI * 2) * 250,
-                    Math.cos((i / 8) * Math.PI * 2 + Math.PI * 2) * 250,
+                    Math.cos((i / 8) * Math.PI * 2) * 200,
+                    Math.cos((i / 8) * Math.PI * 2 + Math.PI * 2) * 200,
                   ],
                   y: [
-                    Math.sin((i / 8) * Math.PI * 2) * 250,
-                    Math.sin((i / 8) * Math.PI * 2 + Math.PI * 2) * 250,
+                    Math.sin((i / 8) * Math.PI * 2) * 200,
+                    Math.sin((i / 8) * Math.PI * 2 + Math.PI * 2) * 200,
                   ],
                 }}
                 transition={{
@@ -231,25 +231,25 @@ const Index = () => {
           </motion.p>
         </StaggerItem>
 
-        <StaggerItem className="flex flex-col sm:flex-row gap-5 mb-16">
+        <StaggerItem className="flex flex-col sm:flex-row gap-4 sm:gap-5 mb-12 sm:mb-16">
           {user ? (
             <>
-              <Link to="/log-vibe">
+              <Link to="/log-vibe" className="w-full sm:w-auto">
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group btn-premium flex items-center gap-3 text-lg"
+                  className="group btn-premium flex items-center justify-center gap-3 text-base sm:text-lg w-full"
                 >
                   <Zap className="w-5 h-5" />
                   Log Your Vibe
                   <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                 </motion.button>
               </Link>
-              <Link to="/resonance-map">
+              <Link to="/resonance-map" className="w-full sm:w-auto">
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="glass-card-premium px-8 py-4 rounded-xl font-semibold text-foreground flex items-center gap-3 text-lg border-2 border-indigo-500/30"
+                  className="glass-card-premium px-8 py-4 rounded-xl font-semibold text-foreground flex items-center justify-center gap-3 text-base sm:text-lg border-2 border-indigo-500/30 w-full"
                 >
                   <Globe className="w-5 h-5" />
                   Explore Map
@@ -261,7 +261,7 @@ const Index = () => {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowAuth(true)}
-              className="group btn-premium flex items-center gap-3 text-lg"
+              className="group btn-premium flex items-center justify-center gap-3 text-base sm:text-lg w-full sm:w-auto"
             >
               Get Started
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />

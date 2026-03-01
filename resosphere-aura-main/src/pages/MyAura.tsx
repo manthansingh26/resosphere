@@ -81,10 +81,24 @@ const MyAuraContent = () => {
 
   if (loading && userVibes.length === 0) {
     return (
-      <div className="relative min-h-screen pt-24 pb-16 px-4 cosmic-gradient flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-purple-300">Loading your aura...</p>
+      <div className="relative min-h-screen pt-24 pb-16 px-4 flex items-center justify-center">
+        <ParticleField count={50} />
+        <div className="text-center relative z-10">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            className="w-20 h-20 border-4 border-purple-500/30 border-t-purple-500 rounded-full mx-auto mb-6"
+          />
+          <motion.div
+            animate={{
+              scale: [1, 1.05, 1],
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="absolute top-6 left-1/2 -translate-x-1/2 w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full blur-md"
+          />
+          <h3 className="text-xl font-semibold text-purple-300 mb-2">Loading your aura...</h3>
+          <p className="text-sm text-muted-foreground">Gathering your cosmic energy</p>
         </div>
       </div>
     );
@@ -95,13 +109,13 @@ const MyAuraContent = () => {
       <ParticleField count={15} />
 
       <div className="max-w-4xl mx-auto relative z-10">
-        <StaggerItem className="text-center mb-8">
-          <h1 className="text-4xl font-display font-bold gradient-text mb-2">My Aura</h1>
-          <p className="text-muted-foreground">Your evolving emotional signature</p>
+        <StaggerItem className="text-center mb-6 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold gradient-text mb-2">My Aura</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Your evolving emotional signature</p>
         </StaggerItem>
 
         {/* Main Orb */}
-        <StaggerItem className="w-64 h-64 sm:w-80 sm:h-80 mx-auto mb-4" id="main-aura-orb">
+        <StaggerItem className="w-48 h-48 sm:w-64 sm:h-64 lg:w-80 lg:h-80 mx-auto mb-4" id="main-aura-orb">
           <AuraOrb
             className="w-full h-full"
             color1={dominantColor}
@@ -114,8 +128,8 @@ const MyAuraContent = () => {
           />
         </StaggerItem>
 
-        <StaggerItem className="text-center mb-8">
-          <p className="text-sm text-muted-foreground mb-4">
+        <StaggerItem className="text-center mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm text-muted-foreground mb-4">
             Click & drag to explore • Click orb to pulse
           </p>
           
@@ -124,15 +138,15 @@ const MyAuraContent = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleShareToX}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 text-white font-semibold shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)] transition-all"
+            className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 text-white text-sm sm:text-base font-semibold shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)] transition-all"
           >
-            <Share2 className="w-5 h-5" />
+            <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
             Share My Aura to X
           </motion.button>
         </StaggerItem>
 
         {/* Stats Grid */}
-        <StaggerItem className="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-12">
+        <StaggerItem className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4 mb-8 sm:mb-12">
           {[
             { name: "Energy", value: averageStats.energy, color: "#EC4899" },
             { name: "Calm", value: averageStats.calm, color: "#06B6D4" },
@@ -142,31 +156,31 @@ const MyAuraContent = () => {
           ].map((stat) => (
             <motion.div
               key={stat.name}
-              className="glass-card p-4 text-center"
+              className="glass-card p-3 sm:p-4 text-center"
               whileHover={{ scale: 1.05 }}
             >
               <div
-                className="text-3xl font-bold mb-1"
+                className="text-2xl sm:text-3xl font-bold mb-1"
                 style={{ color: stat.color }}
               >
                 {Math.round(stat.value * 100)}%
               </div>
-              <div className="text-xs text-muted-foreground">{stat.name}</div>
+              <div className="text-[10px] sm:text-xs text-muted-foreground">{stat.name}</div>
             </motion.div>
           ))}
         </StaggerItem>
 
         {/* Latest Insight */}
         {userVibes.length > 0 && userVibes[0].insight && (
-          <StaggerItem className="glass-card p-6 mb-12">
+          <StaggerItem className="glass-card p-4 sm:p-6 mb-8 sm:mb-12">
             <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-5 h-5 text-purple-400" />
-              <h3 className="text-sm font-semibold text-purple-300">Latest Cosmic Insight</h3>
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
+              <h3 className="text-xs sm:text-sm font-semibold text-purple-300">Latest Cosmic Insight</h3>
             </div>
-            <p className="text-foreground italic whitespace-pre-line">
+            <p className="text-sm sm:text-base text-foreground italic whitespace-pre-line">
               {userVibes[0].insight}
             </p>
-            <p className="text-xs text-muted-foreground mt-3">
+            <p className="text-[10px] sm:text-xs text-muted-foreground mt-3">
               {format(new Date(userVibes[0].created_at), "MMM d, yyyy 'at' h:mm a")}
             </p>
           </StaggerItem>
@@ -174,19 +188,19 @@ const MyAuraContent = () => {
 
         {/* Timeline */}
         <div className="space-y-4">
-          <h2 className="text-xl font-display font-semibold text-foreground flex items-center gap-2">
+          <h2 className="text-lg sm:text-xl font-display font-semibold text-foreground flex items-center gap-2">
             Vibe Timeline
-            <span className="text-sm text-muted-foreground font-normal">
+            <span className="text-xs sm:text-sm text-muted-foreground font-normal">
               ({userVibes.length} {userVibes.length === 1 ? 'vibe' : 'vibes'})
             </span>
           </h2>
           
           {userVibes.length === 0 ? (
-            <div className="glass-card p-8 text-center">
-              <p className="text-muted-foreground mb-4">No vibes logged yet</p>
+            <div className="glass-card p-6 sm:p-8 text-center">
+              <p className="text-sm sm:text-base text-muted-foreground mb-4">No vibes logged yet</p>
               <a
                 href="/log-vibe"
-                className="inline-block px-6 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-medium"
+                className="inline-block px-5 sm:px-6 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-600 text-white text-sm sm:text-base font-medium"
               >
                 Log Your First Vibe
               </a>
@@ -201,9 +215,9 @@ const MyAuraContent = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="glass-card-hover p-4 flex items-start gap-4"
+                  className="glass-card-hover p-3 sm:p-4 flex items-start gap-3 sm:gap-4"
                 >
-                  <div className="w-16 h-16 flex-shrink-0">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0">
                     <AuraOrb
                       className="w-full h-full"
                       color1={vibe.orb_color || "#8B5CF6"}
@@ -217,23 +231,23 @@ const MyAuraContent = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between mb-2">
-                      <div>
+                      <div className="flex-1 min-w-0 pr-2">
                         {vibe.text && (
-                          <p className="text-sm text-foreground mb-1">{vibe.text}</p>
+                          <p className="text-xs sm:text-sm text-foreground mb-1 line-clamp-2">{vibe.text}</p>
                         )}
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-[10px] sm:text-xs text-muted-foreground">
                           {format(new Date(vibe.created_at), "MMM d, yyyy 'at' h:mm a")}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold gradient-text">
+                      <div className="text-right flex-shrink-0">
+                        <div className="text-base sm:text-lg font-bold gradient-text">
                           {Math.round(overallMood * 100)}%
                         </div>
                       </div>
                     </div>
                     
                     {/* Mini stats */}
-                    <div className="flex gap-2 flex-wrap mt-2">
+                    <div className="flex gap-1.5 sm:gap-2 flex-wrap mt-2">
                       {[
                         { name: "E", value: vibe.energy, color: "#EC4899" },
                         { name: "C", value: vibe.calm, color: "#06B6D4" },
@@ -243,7 +257,7 @@ const MyAuraContent = () => {
                       ].map((stat) => (
                         <div
                           key={stat.name}
-                          className="px-2 py-1 rounded text-xs font-medium"
+                          className="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-[10px] sm:text-xs font-medium"
                           style={{
                             backgroundColor: `${stat.color}20`,
                             color: stat.color,

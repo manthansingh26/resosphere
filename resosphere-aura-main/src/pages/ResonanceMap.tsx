@@ -47,10 +47,16 @@ const ResonanceMap = () => {
   const { vibes, subscribeToVibes, unsubscribe } = useVibesStore();
   const [hoveredPoint, setHoveredPoint] = useState<VibePoint | null>(null);
   const [vibeCount, setVibeCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     subscribeToVibes();
-    return () => unsubscribe();
+    // Simulate initial load
+    const timer = setTimeout(() => setIsLoading(false), 1500);
+    return () => {
+      unsubscribe();
+      clearTimeout(timer);
+    };
   }, [subscribeToVibes, unsubscribe]);
 
   useEffect(() => {
@@ -97,18 +103,41 @@ const ResonanceMap = () => {
     <div className="relative min-h-screen pt-20 overflow-hidden">
       <ParticleField count={30} />
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="text-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="w-20 h-20 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full mx-auto mb-6"
+            />
+            <motion.div
+              animate={{
+                scale: [1, 1.05, 1],
+                opacity: [0.5, 1, 0.5],
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute top-6 left-1/2 -translate-x-1/2 w-10 h-10 bg-gradient-to-br from-cyan-500 to-indigo-500 rounded-full blur-md"
+            />
+            <h3 className="text-xl font-semibold text-cyan-300 mb-2">Loading Earth...</h3>
+            <p className="text-sm text-muted-foreground">Mapping global resonance</p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="absolute top-24 left-0 right-0 z-20 px-4">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-6"
+            className="text-center mb-4 sm:mb-6"
           >
-            <h1 className="text-5xl font-display font-black gradient-text glow-text-strong mb-3">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-black gradient-text glow-text-strong mb-2 sm:mb-3">
               Resonance Map
             </h1>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-sm sm:text-base lg:text-lg text-muted-foreground">
               Feel the global vibe in real-time
             </p>
           </motion.div>
@@ -117,18 +146,18 @@ const ResonanceMap = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-card-premium p-5 max-w-md mx-auto flex items-center justify-center gap-6 border-2 border-indigo-500/30"
+            className="glass-card-premium p-4 sm:p-5 max-w-md mx-auto flex items-center justify-center gap-4 sm:gap-6 border-2 border-indigo-500/30"
           >
             <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-cyan-400" />
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
               <div>
-                <div className="text-2xl font-bold gradient-text-static">
+                <div className="text-xl sm:text-2xl font-bold gradient-text-static">
                   {vibeCount.toLocaleString()}
                 </div>
-                <div className="text-xs text-muted-foreground">vibes logged</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">vibes logged</div>
               </div>
             </div>
-            <div className="w-px h-10 bg-border" />
+            <div className="w-px h-8 sm:h-10 bg-border" />
             <div className="flex items-center gap-2">
               <motion.div
                 animate={{
@@ -140,11 +169,11 @@ const ResonanceMap = () => {
                   repeat: Infinity,
                 }}
               >
-                <Zap className="w-5 h-5 text-purple-400" />
+                <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
               </motion.div>
               <div>
-                <div className="text-2xl font-bold text-purple-400">LIVE</div>
-                <div className="text-xs text-muted-foreground">realtime</div>
+                <div className="text-xl sm:text-2xl font-bold text-purple-400">LIVE</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground">realtime</div>
               </div>
             </div>
           </motion.div>
@@ -166,27 +195,27 @@ const ResonanceMap = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 glass-card-premium p-6 max-w-sm border-2 border-indigo-500/30"
+            className="absolute bottom-24 sm:bottom-8 left-4 right-4 sm:left-1/2 sm:-translate-x-1/2 z-20 glass-card-premium p-4 sm:p-6 max-w-sm mx-auto sm:mx-0 border-2 border-indigo-500/30"
           >
             <button
               onClick={() => setHoveredPoint(null)}
-              className="absolute top-2 right-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute top-2 right-2 text-muted-foreground hover:text-foreground transition-colors text-xl sm:text-base"
             >
               ✕
             </button>
-            <h3 className="font-bold text-foreground mb-2 text-lg">
+            <h3 className="font-bold text-foreground mb-2 text-base sm:text-lg pr-6">
               {hoveredPoint.label}
             </h3>
             <div className="flex items-center gap-2 mb-2">
               <div
-                className="w-5 h-5 rounded-full animate-pulse-glow"
+                className="w-4 h-4 sm:w-5 sm:h-5 rounded-full animate-pulse-glow"
                 style={{ backgroundColor: hoveredPoint.color }}
               />
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs sm:text-sm text-muted-foreground">
                 Someone just felt {Math.round(hoveredPoint.mood)}% resonance
               </span>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
               {format(new Date(hoveredPoint.timestamp), "MMM d, yyyy 'at' h:mm a")}
             </p>
           </motion.div>
@@ -198,7 +227,7 @@ const ResonanceMap = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="absolute bottom-8 right-8 z-20 glass-card-premium p-4 max-w-xs border border-indigo-500/30"
+        className="hidden sm:block absolute bottom-8 right-8 z-20 glass-card-premium p-4 max-w-xs border border-indigo-500/30"
       >
         <p className="text-xs text-muted-foreground">
           🌍 Drag to rotate • Scroll to zoom • Click points for details

@@ -1,12 +1,17 @@
 {
   "name": "ResoSphere - Feel the World's Vibe",
   "short_name": "ResoSphere",
-  "description": "Log your emotions, see your aura evolve, and discover others who resonate with your energy.",
+  "description": "Log your emotions, see your 3D aura evolve in real-time, and discover others who resonate with your cosmic energy. Experience the emotional internet.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#0a0a0f",
-  "theme_color": "#8B5CF6",
+  "theme_color": "#0a0a0f",
   "orientation": "portrait-primary",
+  "dir": "ltr",
+  "lang": "en-US",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/placeholder.svg",
@@ -21,13 +26,37 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["lifestyle", "social", "wellness"],
+  "categories": ["lifestyle", "social", "wellness", "health"],
   "screenshots": [
     {
       "src": "/placeholder.svg",
       "sizes": "540x720",
       "type": "image/svg+xml",
-      "form_factor": "narrow"
+      "form_factor": "narrow",
+      "label": "ResoSphere Home Screen"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Log Vibe",
+      "short_name": "Log",
+      "description": "Quickly log your current vibe",
+      "url": "/log-vibe",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "My Aura",
+      "short_name": "Aura",
+      "description": "View your evolving aura",
+      "url": "/my-aura",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Resonance Map",
+      "short_name": "Map",
+      "description": "Explore the global vibe map",
+      "url": "/resonance-map",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
     }
   ]
 }
