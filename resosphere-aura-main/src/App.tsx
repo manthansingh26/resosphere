@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,13 +10,16 @@ import Navbar from "@/components/Navbar";
 import MobileNav from "@/components/MobileNav";
 import PageTransition from "@/components/PageTransition";
 import Starfield from "@/components/Starfield";
-import Index from "./pages/Index";
-import LogVibe from "./pages/LogVibe";
-import MyAura from "./pages/MyAura";
-import ResonanceMap from "./pages/ResonanceMap";
-import Matches from "./pages/Matches";
-import Profile from "./pages/Profile";
-import NotFound from "./pages/NotFound";
+import LoadingSpinner from "@/components/LoadingSpinner";
+
+// Lazy load pages for better performance
+const Index = lazy(() => import("./pages/Index"));
+const LogVibe = lazy(() => import("./pages/LogVibe"));
+const MyAura = lazy(() => import("./pages/MyAura"));
+const ResonanceMap = lazy(() => import("./pages/ResonanceMap"));
+const Matches = lazy(() => import("./pages/Matches"));
+const Profile = lazy(() => import("./pages/Profile"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -24,15 +28,21 @@ const AnimatedRoutes = () => {
 
   return (
     <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Index /></PageTransition>} />
-        <Route path="/log-vibe" element={<PageTransition><LogVibe /></PageTransition>} />
-        <Route path="/my-aura" element={<PageTransition><MyAura /></PageTransition>} />
-        <Route path="/resonance-map" element={<PageTransition><ResonanceMap /></PageTransition>} />
-        <Route path="/matches" element={<PageTransition><Matches /></PageTransition>} />
-        <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
-        <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
-      </Routes>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <LoadingSpinner size="lg" message="Loading..." />
+        </div>
+      }>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Index /></PageTransition>} />
+          <Route path="/log-vibe" element={<PageTransition><LogVibe /></PageTransition>} />
+          <Route path="/my-aura" element={<PageTransition><MyAura /></PageTransition>} />
+          <Route path="/resonance-map" element={<PageTransition><ResonanceMap /></PageTransition>} />
+          <Route path="/matches" element={<PageTransition><Matches /></PageTransition>} />
+          <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+          <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
+        </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 };
