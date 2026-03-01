@@ -1,4 +1,6 @@
 {
+  "buildCommand": "cd resosphere-aura-main && npm install && npm run build",
+  "outputDirectory": "resosphere-aura-main/dist",
   "rewrites": [
     {
       "source": "/(.*)",
