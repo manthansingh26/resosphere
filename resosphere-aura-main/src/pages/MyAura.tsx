@@ -1,6 +1,6 @@
-import { useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
-import { Sparkles, Share2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sparkles, Share2, Wand2, Download } from "lucide-react";
 import { toast } from "sonner";
 import AuraOrb from "@/components/AuraOrb";
 import ParticleField from "@/components/ParticleField";
@@ -9,11 +9,14 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useAuthStore } from "@/store/authStore";
 import { useVibesStore } from "@/store/vibesStore";
 import { shareAuraToX } from "@/lib/shareToX";
+import { generateImage, getImageUrl } from "@/lib/imageGeneration";
 import { format } from "date-fns";
 
 const MyAuraContent = () => {
   const { user } = useAuthStore();
   const { vibes, loading, fetchVibes, subscribeToVibes, unsubscribe } = useVibesStore();
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -79,6 +82,59 @@ const MyAuraContent = () => {
     }
   };
 
+  const handleGenerateImage = async () => {
+    setGenerating(true);
+    try {
+      // Get dominant emotion
+      const emotions = {
+        energy: averageStats.energy,
+        calm: averageStats.calm,
+        creative: averageStats.creative,
+        focus: averageStats.focus,
+        joy: averageStats.joy,
+      };
+      const dominantEmotion = Object.entries(emotions).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+      
+      // Create cosmic prompt from user's aura
+      const intensity = Math.round(averageStats.overall * 100);
+      const mood = intensity > 70 ? 'vibrant and powerful' : intensity > 40 ? 'balanced and harmonious' : 'subtle and gentle';
+      
+      const prompt = `cosmic aura visualization, ${dominantEmotion} energy dominant, mystical ${dominantColor} and purple colors, ethereal glow, ${mood} intensity, spiritual atmosphere, nebula background, energy particles, sacred geometry, photorealistic, 8k quality`;
+      
+      toast.info("Generating your cosmic aura image... ✨");
+      
+      const result = await generateImage(prompt, {
+        width: 1024,
+        height: 1024,
+        steps: 30, // Higher quality
+      });
+
+      if (result.image) {
+        setGeneratedImage(getImageUrl(result.image));
+        toast.success('Aura image generated! ✨');
+      } else {
+        toast.error('Failed to generate image');
+      }
+    } catch (error: any) {
+      console.error('Generation error:', error);
+      toast.error(error.message || 'Failed to generate image. Make sure backend is running.');
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const handleDownloadImage = () => {
+    if (!generatedImage) return;
+    
+    const link = document.createElement('a');
+    link.href = generatedImage;
+    link.download = `my-aura-${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Image downloaded! 📥');
+  };
+
   if (loading && userVibes.length === 0) {
     return (
       <div className="relative min-h-screen pt-24 pb-16 px-4 flex items-center justify-center">
@@ -133,17 +189,71 @@ const MyAuraContent = () => {
             Click & drag to explore • Click orb to pulse
           </p>
           
-          {/* Share to X Button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleShareToX}
-            className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 text-white text-sm sm:text-base font-semibold shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)] transition-all"
-          >
-            <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
-            Share My Aura to X
-          </motion.button>
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleGenerateImage}
+              disabled={generating || userVibes.length === 0}
+              className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-sm sm:text-base font-semibold shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              <Wand2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              {generating ? 'Generating...' : 'Generate Aura Image'}
+            </motion.button>
+            
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleShareToX}
+              className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 text-white text-sm sm:text-base font-semibold shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:shadow-[0_0_40px_rgba(139,92,246,0.7)] transition-all"
+            >
+              <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              Share to X
+            </motion.button>
+          </div>
         </StaggerItem>
+
+        {/* Generated Image Display */}
+        <AnimatePresence>
+          {generatedImage && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: -20 }}
+              className="mb-8 sm:mb-12"
+            >
+              <StaggerItem className="glass-card-premium p-4 sm:p-6 border-2 border-indigo-500/30">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-indigo-400" />
+                    <h3 className="text-sm sm:text-base font-bold text-indigo-300">Your Generated Aura</h3>
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleDownloadImage}
+                    className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-600 to-purple-600 text-white text-xs sm:text-sm font-semibold"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download
+                  </motion.button>
+                </div>
+                <motion.img
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  src={generatedImage}
+                  alt="Generated Aura"
+                  className="w-full rounded-xl shadow-2xl"
+                />
+                <p className="text-xs text-muted-foreground mt-3 text-center">
+                  Generated with Kiro Cascade • Based on your {userVibes.length} vibe{userVibes.length !== 1 ? 's' : ''}
+                </p>
+              </StaggerItem>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Stats Grid */}
         <StaggerItem className="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4 mb-8 sm:mb-12">
